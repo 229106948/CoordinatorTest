@@ -47,7 +47,6 @@ public class MyBehavior extends CoordinatorLayout.Behavior<View> {
             mAnimator.cancel();
             mAnimator = null;
         }
-
         mAnimator = ObjectAnimator
                 .ofFloat(target, View.TRANSLATION_Y, value)
                 .setDuration(250);
