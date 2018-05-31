@@ -15,6 +15,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     private int rectHeight;
     private int textSize;
     private IStick iStick;
+
     public StickHeaderDecoration(Context context,IStick stick) {
         mContext=context;
         iStick=stick;
@@ -31,7 +32,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        int pos=parent.getChildLayoutPosition(view);
+        int pos=parent.getChildAdapterPosition(view);
         if (iStick.isFirst(pos)) {
             outRect.top=rectHeight;
         }
@@ -47,11 +48,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
         super.onDrawOver(c, parent, state);
         int childCount = parent.getChildCount();
         int itemCount = state.getItemCount();
-        int left = parent.getPaddingLeft();
+        int left = parent.getPaddingLeft()+parent.getLeft();
+        int right=parent.getRight()-parent.getPaddingRight();
         String preTitle = "";
         String curTitle = "";
-        int right = parent.getWidth() - parent.getPaddingRight();
-        for (int i = 1; i < childCount; i++) {
+        for (int i = 0; i < childCount; i++) {
             View childView = parent.getChildAt(i);
             int postion = parent.getChildAdapterPosition(childView);
             preTitle = curTitle;
@@ -60,7 +61,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
                 continue;
             }
             //文字的基线，保证显示完全
-            int textBaseLine = Math.max(rectHeight, childView.getTop());
+            int top = Math.max(rectHeight, childView.getTop());
             //分组标题
             String title = iStick.getTitle(postion);
             int viewBottom = childView.getBottom();
@@ -68,18 +69,18 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             if (postion + 1 < itemCount) {
                 String nextGroupTitle = iStick.getTitle(postion + 1);
                 //当分组不一样  并且改组要向上移动时候
-                if (!nextGroupTitle.equals(curTitle) && viewBottom < textBaseLine) {
+                if (!nextGroupTitle.equals(curTitle) && viewBottom < top) {
                     //将上一个往上移动
-                    textBaseLine = viewBottom;
+                    top = viewBottom;
                 }
             }
             //绘制边框
-            c.drawRect(left, textBaseLine - rectHeight, right, textBaseLine, rectPaint);
+            c.drawRect(left, top - rectHeight, right, top, rectPaint);
 
+            Paint.FontMetrics fm=textPaint.getFontMetrics();
             //绘制文字并且实现文字居中
-            int value = (int) Math.abs(textPaint.getFontMetrics().descent
-                    + textPaint.getFontMetrics().ascent);
-            c.drawText(title, left, textBaseLine - (rectHeight + value) / 2, textPaint);
+            float value = top-(rectHeight-(fm.bottom-fm.top))/2-fm.bottom;
+            c.drawText(title, left, value, textPaint);
         }
     }
 }

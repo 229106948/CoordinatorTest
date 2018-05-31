@@ -55,7 +55,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if(headerView==null||(headerView!=null&&position!=0)) {
+        if(headerView==null) {
+            holder.textView.setText(datas.get(position));
+        }else if((headerView!=null&&position!=0)){
             holder.textView.setText(datas.get(position-1));
         }
     }

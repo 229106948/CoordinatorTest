@@ -1,6 +1,7 @@
 package test.com.coordinatorlayouttest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,22 +50,12 @@ public class MainActivity extends AppCompatActivity {
         final FrameLayout.LayoutParams params=( FrameLayout.LayoutParams)view.getLayoutParams();
         params.height=Uitools.dip2px(this,80);
         myAdapter.setHeaderView(frameLayout);
-        recyclerView.addItemDecoration(new StickHeaderDecoration(this, new IStick() {
+        searchView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean isFirst(int pos) {
-                if(pos>0) {
-                    if (pos == 1 || !content.get(pos - 1).equals(content.get(pos))) {
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,StickActivity.class);
+                startActivity(intent);
             }
-
-            @Override
-            public String getTitle(int pos) {
-
-                return content.get(pos-1);
-            }
-        }));
+        });
     }
 }
