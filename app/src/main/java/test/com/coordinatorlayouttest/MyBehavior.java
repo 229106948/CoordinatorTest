@@ -33,13 +33,24 @@ public class MyBehavior extends CoordinatorLayout.Behavior<View> {
     @Override
     public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
-        if(scrollDistance<mScrollThreshold){
-            if(dyConsumed>0&&!fling){
+        scrollDistance+=dyConsumed;
+            if(scrollDistance>mScrollThreshold&&dyConsumed>0&&!fling){
                 startAnimator(child,-mScrollThreshold);
             }else if(dyConsumed<0&&!fling){
                 startAnimator(child,0f);
             }
+    }
+
+    @Override
+    public boolean onNestedFling(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, float velocityX, float velocityY, boolean consumed) {
+        if(consumed) {
+            if (scrollDistance > mScrollThreshold && velocityY > 0 && !fling) {
+                startAnimator(child, -mScrollThreshold);
+            } else if (velocityY < 0 && !fling) {
+                startAnimator(child, 0f);
+            }
         }
+        return false;
     }
 
     public void startAnimator(View target, float value) {
