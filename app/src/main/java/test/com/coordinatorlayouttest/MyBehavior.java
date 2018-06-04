@@ -22,6 +22,7 @@ public class MyBehavior extends CoordinatorLayout.Behavior<View> {
         super(context, attrs);
         mScrollThreshold=Uitools.dip2px(context,50);
         mContext=context;
+
     }
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout,
